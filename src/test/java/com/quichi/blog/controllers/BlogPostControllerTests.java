@@ -1,4 +1,4 @@
-package com.quichi.blog;
+package com.quichi.blog.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quichi.blog.models.BlogPost;
