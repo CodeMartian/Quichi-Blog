@@ -1,5 +1,6 @@
 package com.quichi.blog.controllers;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +13,8 @@ public class BlogPostController {
 
     @PostMapping(value = "/posts")
     public ResponseEntity post(){
-        return new ResponseEntity(null, HttpStatus.CREATED);
+        HttpHeaders response = new HttpHeaders();
+        response.add("Content-Location", "test");
+        return new ResponseEntity(response, HttpStatus.CREATED);
     }
 }
