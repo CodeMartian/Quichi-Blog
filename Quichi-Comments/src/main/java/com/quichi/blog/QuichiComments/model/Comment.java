@@ -16,4 +16,8 @@ public class Comment {
     public long getId() {
         return id;
     }
+
+    public String getContent() {
+        return content;
+    }
 }
