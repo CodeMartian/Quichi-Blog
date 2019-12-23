@@ -18,7 +18,7 @@ public class CommentController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Comment create(@RequestBody @Valid final Comment comment) {
-        return new Comment(comment.getId(), comment.getContent());  //commentService.save(comment);
+        return new Comment(comment.getId(), comment.getContent(), comment.getCreatedDate());  //commentService.save(comment);
     }
 
 }

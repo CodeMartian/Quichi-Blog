@@ -11,6 +11,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.Date;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest
@@ -24,7 +26,7 @@ public class CommentControllerTest {
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/comments")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(new Comment(1, "Firt Comment")))
+                .content(asJsonString(new Comment(1, "Firt Comment", new Date())))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").exists());
