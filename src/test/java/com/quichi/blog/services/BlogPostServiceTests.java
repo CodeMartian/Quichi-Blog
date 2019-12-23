@@ -18,7 +18,7 @@ public class BlogPostServiceTests {
     BlogPostRepository blogPostRepo;
 
     @InjectMocks
-    BlogPostService blogPostService = new BlogPostService();
+    BlogPostService blogPostService;
 
     @BeforeEach
     void setUp() {

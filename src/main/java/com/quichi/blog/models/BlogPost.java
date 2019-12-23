@@ -17,9 +17,7 @@ public class BlogPost {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @NonNull
     private String title;
-    @NonNull
     private String description;
     private Date createdDate;
 
