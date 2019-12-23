@@ -10,6 +10,7 @@ import java.util.Date;
 
 @Repository
 public class BlogPostRepository{
+
     @Autowired
     JdbcTemplate jdbcTemplate;
 
