@@ -1,11 +1,8 @@
 package com.quichi.blog.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.Date;
 
@@ -15,15 +12,27 @@ import java.util.Date;
 //@RequiredArgsConstructor
 public class BlogPost {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String title;
     private String description;
     private Date createdDate;
 
+    public int getId() {
+        return id;
+    }
+
     public BlogPost() {
 
     }
     public BlogPost(String title, String description, Date createdDate) {
+        this.title = title;
+        this.description = description;
+        this.createdDate = createdDate;
+    }
+
+    public BlogPost(int id, String title, String description, Date createdDate) {
+        this.id = id;
         this.title = title;
         this.description = description;
         this.createdDate = createdDate;
