@@ -6,10 +6,17 @@ public class Comment {
 
     private long id;
     private String content;
-
     private Date createdDate;
 
     public Comment(){}
+
+    public Comment(
+            final String content,
+            final Date createdDate) {
+
+        this.content = content;
+        this.createdDate = createdDate;
+    }
 
     public Comment(
             final long id,

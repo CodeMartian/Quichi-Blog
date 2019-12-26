@@ -17,8 +17,8 @@ public class CommentJdbcRepository {
 
     public int save(Comment comment) {
 
-        return jdbcTemplate.update("INSERT INTO comment values(?,?,?)",
-                comment.getId(), comment.getContent(), new Date());
+        return jdbcTemplate.update("INSERT INTO comment (content, created_date) values(?,?)"
+                , comment.getContent(), new Date());
     }
 
     public List<Comment> getAll() {

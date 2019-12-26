@@ -21,9 +21,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest
@@ -53,16 +51,16 @@ public class CommentControllerTest {
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/comments")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(new Comment(1, "Firt Comment", new Date())))
+                .content(asJsonString(new Comment("Firt Comment", new Date())))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").exists());
     }
 
-    @Test
+   @Test
     public void shouldReturnAllComments() throws Exception {
-        List<Comment> comments = Arrays.asList(new Comment(1, "Fist comment", new Date()),
-                new Comment(2, "Second comment", new Date()));
+        List<Comment> comments = Arrays.asList(new Comment("Fist comment", new Date()),
+                new Comment("Second comment", new Date()));
 
         Mockito.when(commentService.getAll()).thenReturn(comments);
 
@@ -76,7 +74,7 @@ public class CommentControllerTest {
 
     @Test
     public void shouldReturnOneCommentGivenById() throws Exception {
-        Comment comment = new Comment(1, "First Comment", new Date());
+        Comment comment = new Comment("First Comment", new Date());
 
         Mockito.when(commentService.findById(comment.getId())).thenReturn(comment);
 
@@ -84,7 +82,7 @@ public class CommentControllerTest {
         .get("/comments/{id}", comment.getId())
         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(0));
     }
 
     @Test
@@ -103,7 +101,7 @@ public class CommentControllerTest {
         mockMvc.perform(MockMvcRequestBuilders
                 .put("/comments")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(new Comment(1, "First Comment update", new Date())))
+                .content(asJsonString(new Comment("First Comment update", new Date())))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content").value("First Comment update"));
