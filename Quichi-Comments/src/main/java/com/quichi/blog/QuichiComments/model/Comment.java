@@ -9,14 +9,15 @@ public class Comment {
 
     private Date createdDate;
 
+    public Comment(){}
+
     public Comment(
             final long id,
-            final String content,
-            final Date createdDate) {
+            final String content) {
 
         this.id = id;
         this.content = content;
-        this.createdDate = createdDate;
+        this.createdDate = new Date();
     }
 
     public long getId() {
