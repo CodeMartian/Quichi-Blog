@@ -41,4 +41,8 @@ public class CommentJdbcRepository {
     public int delete(long id) {
         return jdbcTemplate.update("DELETE FROM comment WHERE id = ?", id );
     }
+
+    public int update(Comment comment) {
+        return jdbcTemplate.update("UPDATE comment SET content = ? WHERE id = ?" , comment.getContent(), comment.getId());
+    }
 }

@@ -48,4 +48,16 @@ public class CommentController {
     public void deleteComment(@PathVariable("id") long id) {
         commentService.delete(id);
     }
+
+    @PutMapping
+    @ResponseStatus(HttpStatus.OK)
+    public Comment updateComment(@RequestBody @Valid Comment comment) throws CommentDataException {
+        int rowUpdated = commentService.update(comment);
+
+        if (rowUpdated > 0) {
+            return comment;
+        } else {
+            throw new CommentDataException("The message could not be updated");
+        }
+    }
 }

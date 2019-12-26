@@ -28,4 +28,8 @@ public class CommentService {
     public int delete(long id) {
        return commentJdbcRepository.delete(id);
     }
+
+    public int update(Comment comment) {
+         return commentJdbcRepository.update(comment);
+    }
 }

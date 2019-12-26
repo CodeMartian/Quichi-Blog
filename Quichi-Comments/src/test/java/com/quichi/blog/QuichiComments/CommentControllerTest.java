@@ -95,6 +95,21 @@ public class CommentControllerTest {
                 .andExpect(status().isAccepted());
     }
 
+    @Test
+    public void shouldUpdateCommentById() throws Exception {
+
+        Mockito.when(commentService.update(ArgumentMatchers.isA(Comment.class))).thenReturn(1);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .put("/comments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(new Comment(1, "First Comment update", new Date())))
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content").value("First Comment update"));
+
+    }
+
     private static String asJsonString(final Object obj) {
         try {
             return new ObjectMapper().writeValueAsString(obj);
