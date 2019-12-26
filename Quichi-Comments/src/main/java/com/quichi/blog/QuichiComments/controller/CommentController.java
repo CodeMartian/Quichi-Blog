@@ -8,6 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.Optional;
+
 
 @RestController
 @RequestMapping("/comments")
@@ -25,6 +28,18 @@ public class CommentController {
         if(rowsInserted > 0)
             return comment;
         else
-            throw new CommentDataException();
+            throw new CommentDataException("The message could not be created");
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<Comment> getAllComments() {
+        return commentService.getAll();
+    }
+
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Comment getComment(@PathVariable("id") long id) throws ClassNotFoundException {
+        return commentService.findById(id);
     }
 }

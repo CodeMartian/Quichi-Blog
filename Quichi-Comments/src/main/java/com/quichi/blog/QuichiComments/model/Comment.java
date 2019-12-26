@@ -13,11 +13,12 @@ public class Comment {
 
     public Comment(
             final long id,
-            final String content) {
+            final String content,
+            final Date createdDate) {
 
         this.id = id;
         this.content = content;
-        this.createdDate = new Date();
+        this.createdDate = createdDate;
     }
 
     public long getId() {
