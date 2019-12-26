@@ -24,4 +24,8 @@ public class CommentService {
     public Comment findById(long id) throws ClassNotFoundException {
         return commentJdbcRepository.findById(id).orElseThrow(ClassNotFoundException::new);
     }
+
+    public int delete(long id) {
+       return commentJdbcRepository.delete(id);
+    }
 }

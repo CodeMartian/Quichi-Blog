@@ -42,4 +42,10 @@ public class CommentController {
     public Comment getComment(@PathVariable("id") long id) throws ClassNotFoundException {
         return commentService.findById(id);
     }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void deleteComment(@PathVariable("id") long id) {
+        commentService.delete(id);
+    }
 }

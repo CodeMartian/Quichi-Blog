@@ -87,6 +87,14 @@ public class CommentControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1));
     }
 
+    @Test
+    public void shouldDeleteCommentById() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .delete("/comments/{id}", 1))
+                .andExpect(status().isAccepted());
+    }
+
     private static String asJsonString(final Object obj) {
         try {
             return new ObjectMapper().writeValueAsString(obj);

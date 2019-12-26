@@ -37,4 +37,8 @@ public class CommentJdbcRepository {
                 rs.getDate("created_date"))
         ));
     }
+
+    public int delete(long id) {
+        return jdbcTemplate.update("DELETE FROM comment WHERE id = ?", id );
+    }
 }
