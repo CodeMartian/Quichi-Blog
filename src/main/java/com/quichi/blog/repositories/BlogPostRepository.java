@@ -26,4 +26,9 @@ public class BlogPostRepository{
     public List<BlogPost> getAll() {
         return jdbcTemplate.query("select * from BLOG_POST", new BlogRowMapper());
     }
+
+    public BlogPost getPostById(int id) {
+        return jdbcTemplate.queryForObject("select * from BLOG_POST where id = ?",
+                new Object[]{id},new BlogRowMapper());
+    }
 }

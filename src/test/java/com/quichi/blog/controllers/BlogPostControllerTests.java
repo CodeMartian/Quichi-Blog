@@ -76,4 +76,19 @@ public class BlogPostControllerTests  {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
+
+    @Test
+    void shouldGetPostById() throws Exception {
+        BlogPost post = BlogPost.builder()
+                .id(1)
+                .title("Test Title")
+                .description("Test Description")
+                .build();
+        when(blogPostService.saveOrUpdate(post)).thenReturn(true);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("http://localhost:8080/blog/post/1")
+                  .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+    }
 }

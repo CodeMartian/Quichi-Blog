@@ -38,4 +38,18 @@ public class BlogPostServiceTests {
         blogPostService.getAllPost();
         verify(blogPostRepo).getAll();
     }
+
+    @Test
+    void shouldGetPostById(){
+        int idPost = 2;
+        BlogPost post = BlogPost.builder()
+                .id(idPost)
+                .title("Test Title")
+                .description("Test Description")
+                .build();
+        when(blogPostRepo.save(post)).thenReturn(true);
+        blogPostService.getPostById(idPost);
+        verify(blogPostRepo).getPostById(idPost);
+
+    }
 }

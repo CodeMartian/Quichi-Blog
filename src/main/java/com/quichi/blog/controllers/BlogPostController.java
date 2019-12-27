@@ -26,7 +26,12 @@ public class BlogPostController {
     @GetMapping(value = "/post/all")
     public ResponseEntity getBlog(){
         blogPostService.getAllPost();
-        return  new ResponseEntity( blogPostService.getAllPost(), HttpStatus.OK);
+        return  new ResponseEntity(blogPostService.getAllPost(), HttpStatus.OK);
 
+    }
+
+    @GetMapping(value = "/post/{id}")
+    public ResponseEntity getBlogById(@PathVariable Integer id){
+        return new ResponseEntity(blogPostService.getPostById(id), HttpStatus.OK);
     }
 }

@@ -20,4 +20,8 @@ public class BlogPostService {
     public List<BlogPost> getAllPost() {
           return blogPostRepository.getAll();
     }
+
+    public BlogPost getPostById(int id) {
+       return blogPostRepository.getPostById(id);
+    }
 }
