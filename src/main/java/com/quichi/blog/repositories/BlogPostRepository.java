@@ -1,12 +1,14 @@
 package com.quichi.blog.repositories;
 
 import com.quichi.blog.models.BlogPost;
+import com.quichi.blog.utils.BlogRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 @Repository
 public class BlogPostRepository{
@@ -19,5 +21,9 @@ public class BlogPostRepository{
         jdbcTemplate.update("insert into BLOG_POST (id,created_date, description, title ) "+"values(?,?,?,?)",
              blogPost.getId(), today,  blogPost.getDescription(), blogPost.getTitle());
         return true;
+    }
+
+    public List<BlogPost> getAll() {
+        return jdbcTemplate.query("select * from BLOG_POST", new BlogRowMapper());
     }
 }

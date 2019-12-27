@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -27,12 +28,14 @@ public class BlogPostServiceTests {
 
     @Test
     void shouldReturnTrueWhenSaveOrUpdateIsCalled() {
-        //Given
         BlogPost blogPost = new BlogPost();
         when(blogPostRepo.save(blogPost)).thenReturn(true);
-
-        //When
-        //Then
         assertTrue(blogPostService.saveOrUpdate(blogPost));
+    }
+
+    @Test
+    void shouldGetAllPost(){
+        blogPostService.getAllPost();
+        verify(blogPostRepo).getAll();
     }
 }

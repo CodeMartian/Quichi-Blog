@@ -21,10 +21,11 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.Date;
 
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 
@@ -52,16 +53,27 @@ public class BlogPostControllerTests  {
     @Test
     void shouldReturn201Response() throws Exception {
 
-        BlogPost post = BlogPost
-                .builder()
+        BlogPost post = BlogPost.builder()
                 .title("Test Title")
                 .description("Test Description")
                 .build();
-
         mockMvc.perform(post("http://localhost:8080/blog/posts")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(post)))
-                .andExpect(MockMvcResultMatchers.status().is(201))
+                .andExpect(status().is(201))
                 .andExpect(MockMvcResultMatchers.header().exists("Content-Location"));
+    }
+
+    @Test
+    void shouldReturn200Response() throws Exception {
+        BlogPost post = BlogPost.builder()
+                .title("Test Title")
+                .description("Test Description")
+                .build();
+        when(blogPostService.saveOrUpdate(post)).thenReturn(true);
+        mockMvc.perform(MockMvcRequestBuilders.get("http://localhost:8080/blog/post/all")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 }
