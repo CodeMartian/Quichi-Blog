@@ -31,4 +31,13 @@ public class BlogPostRepository{
         return jdbcTemplate.queryForObject("select * from BLOG_POST where id = ?",
                 new Object[]{id},new BlogRowMapper());
     }
+
+    public int deletePost(int idPost) {
+        return jdbcTemplate.update("delete from BLOG_POST where id = ?", idPost);
+    }
+
+    public int updatePost(BlogPost postUpdated) {
+        return jdbcTemplate.update("update BLOG_POST set description = ?, title =? where id = ?",
+                postUpdated.getDescription(),postUpdated.getTitle(), postUpdated.getId());
+    }
 }

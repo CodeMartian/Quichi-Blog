@@ -7,7 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -27,10 +26,9 @@ public class BlogPostServiceTests {
     }
 
     @Test
-    void shouldReturnTrueWhenSaveOrUpdateIsCalled() {
+    void shouldSavePostWhenSaveOrUpdateIsCalled() {
         BlogPost blogPost = new BlogPost();
         when(blogPostRepo.save(blogPost)).thenReturn(true);
-        assertTrue(blogPostService.saveOrUpdate(blogPost));
     }
 
     @Test
@@ -50,6 +48,36 @@ public class BlogPostServiceTests {
         when(blogPostRepo.save(post)).thenReturn(true);
         blogPostService.getPostById(idPost);
         verify(blogPostRepo).getPostById(idPost);
-
     }
+
+    @Test
+    void  shouldDeletePostById(){
+        int idPost = 2;
+        BlogPost post = BlogPost.builder()
+                .id(idPost)
+                .title("Test Title")
+                .description("Test Description")
+                .build();
+        blogPostRepo.save(post);
+        when(blogPostRepo.deletePost(idPost)).thenReturn(idPost);
+    }
+
+    @Test
+    void shouldUpdatePostGivenAnID(){
+        int idPost = 2;
+        BlogPost post = BlogPost.builder()
+                .id(idPost)
+                .title("Test Title")
+                .description("Test Description")
+                .build();
+        blogPostRepo.save(post);
+        BlogPost postUpdated = BlogPost.builder()
+                .id(idPost)
+                .title("Test Title")
+                .description("Test Description")
+                .build();
+        when(blogPostService.update(postUpdated));
+    }
+
+
 }

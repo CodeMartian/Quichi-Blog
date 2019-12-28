@@ -27,11 +27,24 @@ public class BlogPostController {
     public ResponseEntity getBlog(){
         blogPostService.getAllPost();
         return  new ResponseEntity(blogPostService.getAllPost(), HttpStatus.OK);
-
     }
 
     @GetMapping(value = "/post/{id}")
     public ResponseEntity getBlogById(@PathVariable Integer id){
         return new ResponseEntity(blogPostService.getPostById(id), HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/post/{id}")
+    public ResponseEntity deletePostById(@PathVariable int id){
+        blogPostService.deletePost(id);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/post")
+    public ResponseEntity updatePost(@RequestBody BlogPost blogPost){
+        HttpHeaders response = new HttpHeaders();
+        response.add("Content-Location", "test");
+        blogPostService.update(blogPost);
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

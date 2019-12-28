@@ -24,4 +24,14 @@ public class BlogPostService {
     public BlogPost getPostById(int id) {
        return blogPostRepository.getPostById(id);
     }
+
+    public boolean deletePost(int idPost) {
+        blogPostRepository.deletePost(idPost);
+        return true;
+    }
+
+    public boolean update(BlogPost postUpdated) {
+        blogPostRepository.updatePost(postUpdated);
+        return true;
+    }
 }
