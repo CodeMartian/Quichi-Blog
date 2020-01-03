@@ -18,11 +18,13 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok:1.18.10'
 	annotationProcessor 'org.projectlombok:lombok:1.18.10'
 	runtime 'com.h2database:h2'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
 	runtimeOnly 'mysql:mysql-connector-java'
-	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	testCompile 'com.squareup.okhttp3:mockwebserver'
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	compile files('libs/ojdbc7.jar')
     implementation 'junit:junit:4.12'
 

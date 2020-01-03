@@ -3,11 +3,9 @@ package com.quichi.blog.models;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Required;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Builder
@@ -19,6 +17,10 @@ public class BlogPost {
     private int id;
     private String title;
     private String description;
+
+
+    @Transient
+    private List<Comment> comments;
     private Date createdDate;
 
     public int getId() {
@@ -28,11 +30,20 @@ public class BlogPost {
     public String getTitle() {
         return title;
     }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
     public Date getCreatedDate() {
         return createdDate;
     }
 
     public String getDescription() {
         return description;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 }
