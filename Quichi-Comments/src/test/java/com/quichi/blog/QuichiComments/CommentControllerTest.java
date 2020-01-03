@@ -108,6 +108,21 @@ public class CommentControllerTest {
 
     }
 
+    @Test
+    public void shouldReturnAllCommentsGivenAPostId() throws Exception {
+
+        List<Comment> comments = Arrays.asList(
+                new Comment("This is a comment one", new Date()),
+                new Comment("This is a comment two", new Date()));
+        Mockito.when(commentService.getCommentsByPostId()).thenReturn(comments);
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/comments/blog/{id}", 1)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[*].id").isNotEmpty());
+    }
+
     private static String asJsonString(final Object obj) {
         try {
             return new ObjectMapper().writeValueAsString(obj);

@@ -45,4 +45,15 @@ public class CommentJdbcRepository {
     public int update(Comment comment) {
         return jdbcTemplate.update("UPDATE comment SET content = ? WHERE id = ?" , comment.getContent(), comment.getId());
     }
+
+
+
+    public Optional<Comment> getCommentsByPostId(int blogPostId) {
+        return jdbcTemplate.queryForObject( "SELECT * FROM comment WHERE post_id = ?",  new Object[]{blogPostId},
+                (rs, rowNum) -> Optional.of(new Comment(
+                        rs.getLong("id"),
+                        rs.getString("content"),
+                        rs.getDate("created_date"))
+        ));
+    }
 }
