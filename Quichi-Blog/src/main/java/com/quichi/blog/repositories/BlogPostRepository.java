@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -16,11 +15,9 @@ public class BlogPostRepository{
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-    public boolean save(BlogPost blogPost) {
-        Date today = Calendar.getInstance().getTime();
-        jdbcTemplate.update("insert into BLOG_POST (id,created_date, description, title ) "+"values(?,?,?,?)",
-             blogPost.getId(), today,  blogPost.getDescription(), blogPost.getTitle());
-        return true;
+    public int insert(BlogPost blogPost) {
+        return jdbcTemplate.update("insert into BLOG_POST (id,created_date, description, title ) "+"values(?,?,?,?)",
+                blogPost.getId(), new Date(),  blogPost.getDescription(), blogPost.getTitle());
     }
 
     public List<BlogPost> getAll() {
@@ -32,11 +29,11 @@ public class BlogPostRepository{
                 new Object[]{id},new BlogRowMapper());
     }
 
-    public int deletePost(int idPost) {
+    public int delete(int idPost) {
         return jdbcTemplate.update("delete from BLOG_POST where id = ?", idPost);
     }
 
-    public int updatePost(BlogPost postUpdated) {
+    public int update(BlogPost postUpdated) {
         return jdbcTemplate.update("update BLOG_POST set description = ?, title =? where id = ?",
                 postUpdated.getDescription(),postUpdated.getTitle(), postUpdated.getId());
     }

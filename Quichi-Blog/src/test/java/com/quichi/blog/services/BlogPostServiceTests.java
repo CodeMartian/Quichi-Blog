@@ -1,13 +1,11 @@
 package com.quichi.blog.services;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quichi.blog.models.BlogPost;
-import com.quichi.blog.models.Comment;
+import com.quichi.blog.models.exceptions.BlogPostInsertionException;
 import com.quichi.blog.repositories.BlogPostRepository;
 import com.quichi.blog.service.BlogPostService;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,11 +15,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.io.IOException;
-
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -32,12 +27,19 @@ public class BlogPostServiceTests {
 
     private final MockWebServer mockWebServer = new MockWebServer();
 
+    private BlogPost blogPost;
+
     @InjectMocks
     BlogPostService blogPostService = new BlogPostService(mockWebServer.url("").toString());
 
     @BeforeEach
     void setUp() {
         initMocks(this);
+         blogPost = BlogPost.builder()
+                .id(1)
+                .title("Test Title")
+                .description("Test Description")
+                .build();
     }
 
     @AfterEach
@@ -46,40 +48,16 @@ public class BlogPostServiceTests {
     }
 
     @Test
-    void shouldSavePostWhenSaveOrUpdateIsCalled() {
-        BlogPost blogPost = new BlogPost();
-        when(blogPostRepo.save(blogPost)).thenReturn(true);
-    }
-
-    @Test
-    void shouldGetAllPost(){
-        blogPostService.getAllPost();
-        verify(blogPostRepo).getAll();
-    }
-
-    @Test
-    void shouldGetPostById(){
-        int idPost = 2;
-        BlogPost post = BlogPost.builder()
-                .id(idPost)
-                .title("Test Title")
-                .description("Test Description")
-                .build();
-        when(blogPostRepo.save(post)).thenReturn(true);
-        blogPostService.getPostById(idPost);
-        verify(blogPostRepo).getPostById(idPost);
-    }
-
-    @Test
     void  shouldDeletePostById(){
-        int idPost = 2;
-        BlogPost post = BlogPost.builder()
-                .id(idPost)
-                .title("Test Title")
-                .description("Test Description")
-                .build();
-        blogPostRepo.save(post);
-        when(blogPostRepo.deletePost(idPost)).thenReturn(idPost);
+        blogPostRepo.insert(blogPost);
+        //when(blogPostRepo.delete(idPost)).thenReturn(idPost);
+    }
+
+    @Test
+    void shouldInsertBlogPost() throws BlogPostInsertionException {
+        when(blogPostRepo.insert(blogPost)).thenReturn(1);
+
+        blogPostService.insert(blogPost);
     }
 
     @Test
@@ -90,13 +68,12 @@ public class BlogPostServiceTests {
                 .title("Test Title")
                 .description("Test Description")
                 .build();
-        blogPostRepo.save(post);
+        blogPostRepo.insert(post);
         BlogPost postUpdated = BlogPost.builder()
                 .id(idPost)
                 .title("Test Title")
                 .description("Test Description")
                 .build();
-        when(blogPostService.update(postUpdated));
     }
 
     @Test
@@ -106,7 +83,7 @@ public class BlogPostServiceTests {
                 .setResponseCode(HttpStatus.OK.value())
                 .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .setBody("{\"id\" : 0, \"content\" : \"Test comment\", \"createdDate\" : null}"));
-        BlogPost response = blogPostService.getPostById(1);
+        BlogPost response = blogPostService.getById(1);
         assertThat(response.getId(), is(1));
         assertThat(response.getComments(), is(not(nullValue())));
     }

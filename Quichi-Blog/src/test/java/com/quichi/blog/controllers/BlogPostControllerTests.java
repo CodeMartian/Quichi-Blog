@@ -1,7 +1,10 @@
 package com.quichi.blog.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quichi.blog.models.BlogPost;
+import com.quichi.blog.models.exceptions.BlogPostDeletionException;
+import com.quichi.blog.models.exceptions.BlogPostInsertionException;
 import com.quichi.blog.service.BlogPostService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,14 +15,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultMatcher;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -39,11 +40,19 @@ public class BlogPostControllerTests  {
     @MockBean
     BlogPostService blogPostService;
 
+    private BlogPost blogPost;
+
     @Autowired
     private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
+
+         blogPost = BlogPost.builder()
+                .title("Test Title")
+                .description("Test Description")
+                .build();
+
         initMocks(this);
         this.mockMvc = standaloneSetup(blogPostController).build();
     }
@@ -51,28 +60,39 @@ public class BlogPostControllerTests  {
     @Test
     void shouldReturn201Response() throws Exception {
 
-        BlogPost post = BlogPost.builder()
-                .title("Test Title")
-                .description("Test Description")
-                .build();
         mockMvc.perform(post("http://localhost:8080/blog/posts")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(post)))
+                .content(objectMapper.writeValueAsString(blogPost)))
                 .andExpect(status().is(201))
                 .andExpect(MockMvcResultMatchers.header().exists("Content-Location"));
     }
 
     @Test
-    void shouldReturn200Response() throws Exception {
-        BlogPost post = BlogPost.builder()
-                .title("Test Title")
-                .description("Test Description")
-                .build();
-        when(blogPostService.saveOrUpdate(post)).thenReturn(true);
+    void getAllShouldReturn200Response() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("http://localhost:8080/blog/post/all")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void createBlogPostShouldReturn500Response() throws Exception {
+        doThrow(BlogPostInsertionException.class).when(blogPostService).insert(any(BlogPost.class));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8080/blog/posts")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(blogPost)))
+                .andExpect(status().is5xxServerError());
+    }
+
+    @Test
+    void deleteBlogPostShouldReturn500Response() throws Exception {
+        doThrow(BlogPostDeletionException.class).when(blogPostService).delete(1);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("http://localhost:8080/blog/post/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(blogPost)))
+                .andExpect(status().is5xxServerError());
     }
 
     @Test
@@ -82,7 +102,6 @@ public class BlogPostControllerTests  {
                 .title("Test Title")
                 .description("Test Description")
                 .build();
-        when(blogPostService.saveOrUpdate(post)).thenReturn(true);
         mockMvc.perform(MockMvcRequestBuilders.get("http://localhost:8080/blog/post/1")
                   .accept(MediaType.APPLICATION_JSON))
                   .andExpect(status().isOk());
@@ -95,7 +114,6 @@ public class BlogPostControllerTests  {
                 .title("Test Title")
                 .description("Test Description")
                 .build();
-        when(blogPostService.saveOrUpdate(post)).thenReturn(true);
         mockMvc.perform( MockMvcRequestBuilders
                 .delete("http://localhost:8080/blog/post/1"))
                 .andExpect(MockMvcResultMatchers.status().isOk());
@@ -108,7 +126,7 @@ public class BlogPostControllerTests  {
                 .title("Test Title")
                 .description("Test Description")
                 .build();
-        blogPostService.saveOrUpdate(post);
+        blogPostService.insert(post);
         mockMvc.perform(MockMvcRequestBuilders
                 .put("http://localhost:8080/blog/post")
                 .contentType(MediaType.APPLICATION_JSON)

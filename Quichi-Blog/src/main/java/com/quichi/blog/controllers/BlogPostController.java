@@ -1,6 +1,8 @@
 package com.quichi.blog.controllers;
 
 import com.quichi.blog.models.BlogPost;
+import com.quichi.blog.models.exceptions.BlogPostDeletionException;
+import com.quichi.blog.models.exceptions.BlogPostInsertionException;
 import com.quichi.blog.service.BlogPostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -16,27 +18,35 @@ public class BlogPostController {
     BlogPostService blogPostService;
 
     @PostMapping(value = "/posts")
-    public ResponseEntity post(@RequestBody BlogPost blogPost){
+    public  ResponseEntity post(@RequestBody BlogPost blogPost) {
         HttpHeaders response = new HttpHeaders();
         response.add("Content-Location", "test");
-        blogPostService.saveOrUpdate(blogPost);
+        try {
+            blogPostService.insert(blogPost);
+        } catch (BlogPostInsertionException ex) {
+            return new ResponseEntity(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
         return new ResponseEntity(response, HttpStatus.CREATED);
     }
 
     @GetMapping(value = "/post/all")
     public ResponseEntity getBlog(){
-        blogPostService.getAllPost();
-        return  new ResponseEntity(blogPostService.getAllPost(), HttpStatus.OK);
+        blogPostService.getAll();
+        return  new ResponseEntity(blogPostService.getAll(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/post/{id}")
     public ResponseEntity getBlogById(@PathVariable Integer id){
-        return new ResponseEntity(blogPostService.getPostById(id), HttpStatus.OK);
+        return new ResponseEntity(blogPostService.getById(id), HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/post/{id}")
-    public ResponseEntity deletePostById(@PathVariable int id){
-        blogPostService.deletePost(id);
+    public ResponseEntity deletePostById(@PathVariable int id) {
+        try {
+            blogPostService.delete(id);
+        } catch (BlogPostDeletionException ex) {
+            return new ResponseEntity(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
         return new ResponseEntity(HttpStatus.OK);
     }
 
