@@ -34,7 +34,7 @@ public class CommentService {
          return commentJdbcRepository.update(comment);
     }
 
-    public Optional<Comment> getCommentsByPostId(int blogPostId) {
+    public List<Comment> getCommentsByPostId(long blogPostId) {
         return commentJdbcRepository.getCommentsByPostId(blogPostId);
     }
 }

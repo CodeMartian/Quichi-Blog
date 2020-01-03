@@ -51,7 +51,7 @@ public class CommentControllerTest {
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/comments")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(new Comment("Firt Comment", new Date())))
+                .content(asJsonString(new Comment("Firt Comment", new Date(), 1)))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").exists());
@@ -59,8 +59,8 @@ public class CommentControllerTest {
 
    @Test
     public void shouldReturnAllComments() throws Exception {
-        List<Comment> comments = Arrays.asList(new Comment("Fist comment", new Date()),
-                new Comment("Second comment", new Date()));
+        List<Comment> comments = Arrays.asList(new Comment("Fist comment", new Date(), 1),
+                new Comment("Second comment", new Date(), 1));
 
         Mockito.when(commentService.getAll()).thenReturn(comments);
 
@@ -74,7 +74,7 @@ public class CommentControllerTest {
 
     @Test
     public void shouldReturnOneCommentGivenById() throws Exception {
-        Comment comment = new Comment("First Comment", new Date());
+        Comment comment = new Comment("First Comment", new Date(), 1);
 
         Mockito.when(commentService.findById(comment.getId())).thenReturn(comment);
 
@@ -101,7 +101,7 @@ public class CommentControllerTest {
         mockMvc.perform(MockMvcRequestBuilders
                 .put("/comments")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(new Comment("First Comment update", new Date())))
+                .content(asJsonString(new Comment("First Comment update", new Date(), 1)))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content").value("First Comment update"));
@@ -112,9 +112,10 @@ public class CommentControllerTest {
     public void shouldReturnAllCommentsGivenAPostId() throws Exception {
 
         List<Comment> comments = Arrays.asList(
-                new Comment("This is a comment one", new Date()),
-                new Comment("This is a comment two", new Date()));
-        Mockito.when(commentService.getCommentsByPostId()).thenReturn(comments);
+                new Comment("This is a comment one", new Date(), 1),
+                new Comment("This is a comment two", new Date(), 1));
+        Mockito.when(commentService.getCommentsByPostId(1)).thenReturn(comments);
+
         mockMvc.perform(MockMvcRequestBuilders
                 .get("/comments/blog/{id}", 1)
                 .accept(MediaType.APPLICATION_JSON))

@@ -60,4 +60,11 @@ public class CommentController {
             throw new CommentDataException("The message could not be updated");
         }
     }
+
+    @GetMapping("/blog/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Comment> getAllComments(@PathVariable("id") long postId){
+        return commentService.getCommentsByPostId(postId);
+
+    }
 }
