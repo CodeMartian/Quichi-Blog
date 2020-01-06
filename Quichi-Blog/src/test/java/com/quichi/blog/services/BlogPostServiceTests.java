@@ -1,6 +1,7 @@
 package com.quichi.blog.services;
 
 import com.quichi.blog.models.BlogPost;
+import com.quichi.blog.models.exceptions.BlogPostException;
 import com.quichi.blog.models.exceptions.BlogPostInsertionException;
 import com.quichi.blog.repositories.BlogPostRepository;
 import com.quichi.blog.service.BlogPostService;
@@ -77,7 +78,7 @@ public class BlogPostServiceTests {
     }
 
     @Test
-    void givenABlogPostIdShouldReturnTheMockedComment() {
+    void givenABlogPostIdShouldReturnTheMockedComment() throws BlogPostException {
         when(blogPostRepo.getPostById(1)).thenReturn(BlogPost.builder().id(1).build());
         mockWebServer.enqueue(new MockResponse()
                 .setResponseCode(HttpStatus.OK.value())

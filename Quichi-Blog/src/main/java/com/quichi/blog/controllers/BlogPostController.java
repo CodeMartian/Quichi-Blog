@@ -2,13 +2,17 @@ package com.quichi.blog.controllers;
 
 import com.quichi.blog.models.BlogPost;
 import com.quichi.blog.models.exceptions.BlogPostDeletionException;
+import com.quichi.blog.models.exceptions.BlogPostException;
 import com.quichi.blog.models.exceptions.BlogPostInsertionException;
+import com.quichi.blog.models.exceptions.BlogPostUpdateException;
 import com.quichi.blog.service.BlogPostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/blog")
@@ -30,14 +34,21 @@ public class BlogPostController {
     }
 
     @GetMapping(value = "/post/all")
-    public ResponseEntity getBlog(){
-        blogPostService.getAll();
-        return  new ResponseEntity(blogPostService.getAll(), HttpStatus.OK);
+    public ResponseEntity getBlog() {
+        try {
+            return new ResponseEntity(blogPostService.getAll(), HttpStatus.OK);
+        } catch (BlogPostException ex) {
+            return new ResponseEntity(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping(value = "/post/{id}")
-    public ResponseEntity getBlogById(@PathVariable Integer id){
-        return new ResponseEntity(blogPostService.getById(id), HttpStatus.OK);
+    public ResponseEntity getBlogById(@PathVariable Integer id) {
+        try {
+            return new ResponseEntity(blogPostService.getById(id), HttpStatus.OK);
+        } catch (BlogPostException ex) {
+            return new ResponseEntity(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @DeleteMapping(value = "/post/{id}")
@@ -50,11 +61,16 @@ public class BlogPostController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    //TODO: include an id in the url
     @PutMapping(value = "/post")
     public ResponseEntity updatePost(@RequestBody BlogPost blogPost){
         HttpHeaders response = new HttpHeaders();
         response.add("Content-Location", "test");
-        blogPostService.update(blogPost);
-        return new ResponseEntity(HttpStatus.OK);
+        try {
+            blogPostService.update(blogPost);
+        } catch(BlogPostUpdateException ex) {
+            return new ResponseEntity(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity(response, HttpStatus.OK);
     }
 }
