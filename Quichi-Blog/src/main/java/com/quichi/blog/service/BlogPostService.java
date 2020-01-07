@@ -64,22 +64,24 @@ public class BlogPostService {
         }
     }
 
-    public void insert(BlogPost person) throws BlogPostInsertionException {
+    public int insert(BlogPost person) throws BlogPostInsertionException {
         int result = blogPostRepository.insert(person);
-        if (result == 0 ){
+        if(result == 1) {
+            return person.getId();
+        } else {
             throw new BlogPostInsertionException();
         }
     }
 
-    public void delete(int idPost) throws BlogPostDeletionException {
-        int result = blogPostRepository.delete(idPost);
+    public void delete(int id) throws BlogPostDeletionException {
+        int result = blogPostRepository.delete(id);
         if (result == 0) {
             throw new BlogPostDeletionException();
         }
     }
 
-    public void update(BlogPost postUpdated) throws BlogPostUpdateException {
-        int response = blogPostRepository.update(postUpdated);
+    public void update(int id, BlogPost postUpdated) throws BlogPostUpdateException {
+        int response = blogPostRepository.update(id, postUpdated);
         if (response == 0) {
             throw new BlogPostUpdateException();
         }

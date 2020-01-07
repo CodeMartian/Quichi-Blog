@@ -22,9 +22,9 @@ public class BlogPostController {
     @PostMapping(value = "/blog")
     public  ResponseEntity post(@RequestBody BlogPost blogPost) {
         HttpHeaders response = new HttpHeaders();
-        response.add("Content-Location", "test");
         try {
-            blogPostService.insert(blogPost);
+            int id = blogPostService.insert(blogPost);
+            response.add("Content-Location", "/api/blog/" + id);
         } catch (BlogPostInsertionException ex) {
             return new ResponseEntity(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -59,13 +59,12 @@ public class BlogPostController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    //TODO: include an id in the url
-    @PutMapping(value = "/blog")
-    public ResponseEntity updatePost(@RequestBody BlogPost blogPost){
+    @PutMapping(value = "/blog/{id}")
+    public ResponseEntity updatePost(@PathVariable int id, @RequestBody BlogPost blogPost){
         HttpHeaders response = new HttpHeaders();
-        response.add("Content-Location", "test");
+        response.add("Content-Location", "/api/blog/"+id);
         try {
-            blogPostService.update(blogPost);
+            blogPostService.update(id, blogPost);
         } catch(BlogPostUpdateException ex) {
             return new ResponseEntity(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }

@@ -29,12 +29,12 @@ public class BlogPostRepository{
                 new Object[]{id},new BlogRowMapper());
     }
 
-    public int delete(int idPost) {
-        return jdbcTemplate.update("delete from BLOG_POST where id = ?", idPost);
+    public int delete(int id) {
+        return jdbcTemplate.update("delete from BLOG_POST where id = ?", id);
     }
 
-    public int update(BlogPost postUpdated) {
+    public int update(int id, BlogPost postUpdated) {
         return jdbcTemplate.update("update BLOG_POST set description = ?, title =? where id = ?",
-                postUpdated.getDescription(),postUpdated.getTitle(), postUpdated.getId());
+                postUpdated.getDescription(),postUpdated.getTitle(), id);
     }
 }

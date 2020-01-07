@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -43,11 +44,15 @@ public class BlogPostControllerTests  {
 
     private BlogPost blogPost;
 
+    private int id;
+
     @Autowired
     private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
+
+        id = 1;
 
          blogPost = BlogPost.builder()
                 .title("Test Title")
@@ -65,7 +70,7 @@ public class BlogPostControllerTests  {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(blogPost)))
                 .andExpect(status().is(201))
-                .andExpect(MockMvcResultMatchers.header().exists("Content-Location"));
+                .andExpect(MockMvcResultMatchers.header().string("Content-Location", "/api/blog/" +id));
     }
 
     @Test
@@ -90,7 +95,7 @@ public class BlogPostControllerTests  {
     void deleteBlogPostShouldReturn500Response() throws Exception {
         doThrow(BlogPostDeletionException.class).when(blogPostService).delete(1);
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("http://localhost:8080/api/blog/1")
+        mockMvc.perform(MockMvcRequestBuilders.delete("http://localhost:8080/api/blog/" + id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(blogPost)))
                 .andExpect(status().is5xxServerError());
@@ -98,9 +103,9 @@ public class BlogPostControllerTests  {
 
     @Test
     void updateBlogPostShouldReturn500Response() throws Exception {
-        doThrow(BlogPostUpdateException.class).when(blogPostService).update(any(BlogPost.class));
+        doThrow(BlogPostUpdateException.class).when(blogPostService).update(any(Integer.class), any(BlogPost.class));
 
-        mockMvc.perform(MockMvcRequestBuilders.put("http://localhost:8080/api/blog")
+        mockMvc.perform(MockMvcRequestBuilders.put("http://localhost:8080/api/blog/" + id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(blogPost)))
                 .andExpect(status().is5xxServerError());
@@ -108,9 +113,9 @@ public class BlogPostControllerTests  {
 
     @Test
     void getBlogPostByIdShouldReturn500Response() throws Exception {
-        doThrow(BlogPostException.class).when(blogPostService).getById(1);
+        doThrow(BlogPostException.class).when(blogPostService).getById(id);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("http://localhost:8080/api/blog/1")
+        mockMvc.perform(MockMvcRequestBuilders.get("http://localhost:8080/api/blog/" + id)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is5xxServerError());
     }
@@ -126,7 +131,7 @@ public class BlogPostControllerTests  {
 
     @Test
     void shouldGetPostById() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("http://localhost:8080/api/blog/1")
+        mockMvc.perform(MockMvcRequestBuilders.get("http://localhost:8080/api/blog/" + id)
                   .accept(MediaType.APPLICATION_JSON))
                   .andExpect(status().isOk());
     }
@@ -134,17 +139,17 @@ public class BlogPostControllerTests  {
     @Test
     void shouldDeletePostById() throws Exception {
         mockMvc.perform( MockMvcRequestBuilders
-                .delete("http://localhost:8080/api/blog/1"))
+                .delete("http://localhost:8080/api/blog/" + id))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
-    void shouldUpdatePostGivenAnPostBlog() throws Exception {
+    void shouldUpdatePostGivenAnId() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                .put("http://localhost:8080/api/blog")
+                .put("http://localhost:8080/api/blog/" + id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(blogPost)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.header().exists("Content-Location"));
+                .andExpect(MockMvcResultMatchers.header().string("Content-Location", "/api/blog/" + id));
     }
 }
