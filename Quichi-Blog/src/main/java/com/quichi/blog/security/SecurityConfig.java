@@ -37,7 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
             .authorizeRequests()
             .mvcMatchers("/api/blog").hasAuthority("SCOPE_read:blog")
-            .mvcMatchers("api/blog").hasAuthority("SCOPE_write:blog")
+            .mvcMatchers("/api/blog").hasAuthority("SCOPE_write:blog")
             .and().oauth2ResourceServer().jwt();
     }
 }
