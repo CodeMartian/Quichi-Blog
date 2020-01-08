@@ -14,6 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.net.ConnectException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -66,10 +69,10 @@ public class BlogPostService {
 
     public int insert(BlogPost person) throws BlogPostInsertionException {
         int result = blogPostRepository.insert(person);
-        if(result == 1) {
-            return person.getId();
-        } else {
+        if(result < 0) {
             throw new BlogPostInsertionException();
+        } else {
+            return result;
         }
     }
 

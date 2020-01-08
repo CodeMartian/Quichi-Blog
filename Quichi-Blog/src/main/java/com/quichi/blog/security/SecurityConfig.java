@@ -34,10 +34,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        http
-            .authorizeRequests()
-            .mvcMatchers("/api/blog").hasAuthority("SCOPE_read:blog")
-            .mvcMatchers("/api/blog").hasAuthority("SCOPE_write:blog")
-            .and().oauth2ResourceServer().jwt();
+        http.authorizeRequests()
+                .mvcMatchers("/api/blog").hasAuthority("SCOPE_read:blog")
+                .mvcMatchers("/api/blog").hasAuthority("SCOPE_write:blog")
+                .mvcMatchers("/h2/**").permitAll()
+                .and().oauth2ResourceServer().jwt();
+
+        http.csrf().disable();
+        http.headers().frameOptions().disable();
     }
 }

@@ -1,27 +1,22 @@
 package com.quichi.blog.models;
 
 import lombok.*;
-import org.springframework.beans.factory.annotation.Required;
 
-import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
-@Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class BlogPost {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private int id;
     private String title;
     private String description;
 
-
-    @Transient
     private List<Comment> comments;
     private Date createdDate;
+
 
     public int getId() {
         return id;

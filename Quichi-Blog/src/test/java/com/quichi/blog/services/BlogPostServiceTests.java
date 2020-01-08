@@ -49,35 +49,6 @@ public class BlogPostServiceTests {
     }
 
     @Test
-    void  shouldDeletePostById(){
-        blogPostRepo.insert(blogPost);
-        //when(blogPostRepo.delete(idPost)).thenReturn(idPost);
-    }
-
-    @Test
-    void shouldInsertBlogPost() throws BlogPostInsertionException {
-        when(blogPostRepo.insert(blogPost)).thenReturn(1);
-
-        blogPostService.insert(blogPost);
-    }
-
-    @Test
-    void shouldUpdatePostGivenAnID(){
-        int idPost = 2;
-        BlogPost post = BlogPost.builder()
-                .id(idPost)
-                .title("Test Title")
-                .description("Test Description")
-                .build();
-        blogPostRepo.insert(post);
-        BlogPost postUpdated = BlogPost.builder()
-                .id(idPost)
-                .title("Test Title")
-                .description("Test Description")
-                .build();
-    }
-
-    @Test
     void givenABlogPostIdShouldReturnTheMockedComment() throws BlogPostException {
         when(blogPostRepo.getPostById(1)).thenReturn(BlogPost.builder().id(1).build());
         mockWebServer.enqueue(new MockResponse()

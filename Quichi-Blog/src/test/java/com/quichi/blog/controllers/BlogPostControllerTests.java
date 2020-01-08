@@ -66,6 +66,8 @@ public class BlogPostControllerTests  {
     @Test
     void shouldReturn201Response() throws Exception {
 
+        when(blogPostService.insert(any(BlogPost.class))).thenReturn(id);
+
         mockMvc.perform(post("http://localhost:8080/api/blog")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(blogPost)))

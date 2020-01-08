@@ -4,20 +4,35 @@ import com.quichi.blog.models.BlogPost;
 import com.quichi.blog.utils.BlogRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.util.Calendar;
 import java.util.List;
 
 @Repository
-public class BlogPostRepository{
+public class BlogPostRepository {
 
     @Autowired
     JdbcTemplate jdbcTemplate;
 
     public int insert(BlogPost blogPost) {
-        return jdbcTemplate.update("insert into BLOG_POST (id,created_date, description, title ) "+"values(?,?,?,?)",
-                blogPost.getId(), new Date(),  blogPost.getDescription(), blogPost.getTitle());
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update((connection) -> {
+            PreparedStatement ps = connection.prepareStatement("insert into BLOG_POST (created_date, description, title ) values(?,?,?)", Statement.RETURN_GENERATED_KEYS);
+            ps.setDate(1, new Date(Calendar.getInstance().getTime().getTime()));
+            ps.setString(2, blogPost.getDescription());
+            ps.setString(3, blogPost.getTitle());
+
+            return ps;
+        }, keyHolder);
+
+        return keyHolder.getKey().intValue();
     }
 
     public List<BlogPost> getAll() {
@@ -26,7 +41,7 @@ public class BlogPostRepository{
 
     public BlogPost getPostById(int id) {
         return jdbcTemplate.queryForObject("select * from BLOG_POST where id = ?",
-                new Object[]{id},new BlogRowMapper());
+                new Object[]{id}, new BlogRowMapper());
     }
 
     public int delete(int id) {
