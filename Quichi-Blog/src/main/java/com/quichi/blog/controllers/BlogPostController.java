@@ -1,6 +1,7 @@
 package com.quichi.blog.controllers;
 
 import com.quichi.blog.models.BlogPost;
+import com.quichi.blog.models.Comment;
 import com.quichi.blog.models.exceptions.BlogPostDeletionException;
 import com.quichi.blog.models.exceptions.BlogPostException;
 import com.quichi.blog.models.exceptions.BlogPostInsertionException;
@@ -69,5 +70,17 @@ public class BlogPostController {
             return new ResponseEntity(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity(response, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/blog/{id}/comment")
+    public ResponseEntity createComment(@PathVariable int id, @RequestBody Comment comment){
+        HttpHeaders response  = new HttpHeaders();
+        response.add("Content-Location", "/api/blog/"+id+"/comment");
+        try{
+           blogPostService.createComment(comment);
+        }catch (Exception ex){
+            return new ResponseEntity(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+       return new ResponseEntity(response, HttpStatus.CREATED);
     }
 }

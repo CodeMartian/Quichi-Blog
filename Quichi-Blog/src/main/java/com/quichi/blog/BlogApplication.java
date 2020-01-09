@@ -11,7 +11,7 @@ public class BlogApplication {
 
 	@Bean
 	public String BLOG_COMMENTS_URL() {
-		return "http://localhost:8081/";
+		return "c";
 	}
 
 /*	@Bean

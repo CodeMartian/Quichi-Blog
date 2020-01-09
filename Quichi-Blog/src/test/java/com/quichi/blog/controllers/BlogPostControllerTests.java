@@ -2,6 +2,7 @@ package com.quichi.blog.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quichi.blog.models.BlogPost;
+import com.quichi.blog.models.Comment;
 import com.quichi.blog.models.exceptions.BlogPostDeletionException;
 import com.quichi.blog.models.exceptions.BlogPostException;
 import com.quichi.blog.models.exceptions.BlogPostInsertionException;
@@ -19,6 +20,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import java.util.Date;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
@@ -122,6 +125,7 @@ public class BlogPostControllerTests  {
                 .andExpect(status().is5xxServerError());
     }
 
+
     @Test
     void getAllBlogPostsShouldReturn500Response() throws Exception {
         doThrow(BlogPostException.class).when(blogPostService).getAll();
@@ -154,4 +158,18 @@ public class BlogPostControllerTests  {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.header().string("Content-Location", "/api/blog/" + id));
     }
+
+    @Test
+    void shouldCreateCommentGivenBlogPostIdAndComment() throws Exception {
+        Comment comment = new Comment("This is a content", new Date(), 1);
+                //.blogPostId = 1
+        mockMvc.perform(MockMvcRequestBuilders
+        .post("http://localhost:8080/api/blog/1/comment")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(comment)))
+        .andExpect(MockMvcResultMatchers.status().isCreated())
+        .andExpect(MockMvcResultMatchers.header().exists("Content-Location"));
+
+    }
+
 }

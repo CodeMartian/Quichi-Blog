@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
-
 
 @RestController
 @RequestMapping("/comments")
@@ -22,7 +20,6 @@ public class CommentController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Comment create(@RequestBody @Valid final Comment comment) throws CommentDataException{
-
         final int rowsInserted = commentService.save(comment);
 
         if(rowsInserted > 0)

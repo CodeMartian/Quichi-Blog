@@ -89,4 +89,20 @@ public class BlogPostService {
             throw new BlogPostUpdateException();
         }
     }
+
+    public Comment createComment(Comment comment) throws BlogPostException {
+        try {
+            Mono<Comment> commentMono = webClient
+                    .post()
+                    .uri("/comments")
+                    .body(Mono.just(comment), Comment.class)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .retrieve()
+                    .bodyToMono(Comment.class);
+                   commentMono.block();
+            return  comment;
+        } catch (Exception ex){
+            throw new BlogPostException();
+        }
+    }
 }
